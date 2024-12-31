@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import showdown from 'showdown';
 import compression from 'compression';
 import express from 'express';
@@ -138,11 +139,12 @@ app.get("/:userConfig/stream/:type/:id.json", limiter, async(req, res) => {
 
   try {
 
+    const host = req.get('host') || req.headers.host;
     const streams = await jackettio.getStreams(
       Object.assign(JSON.parse(atob(req.params.userConfig)), {ip: req.clientIp}),
       req.params.type, 
       req.params.id,
-      `${req.hostname == 'localhost' ? 'http' : 'https'}://${req.hostname}`
+      `${host === 'localhost' || host.startsWith('localhost:') ? 'http' : 'https'}://${host}`
     );
 
     return respond(res, {streams});
@@ -166,14 +168,15 @@ app.get("/stream/:type/:id.json", async(req, res) => {
 
 });
 
-app.use('/:userConfig/download/:type/:id/:torrentId/:name?', async(req, res, next) => {
+app.use('/:userConfig?/download/:type/:id/:torrentId/:name?', async(req, res, next) => {
 
   if (req.method !== 'GET' && req.method !== 'HEAD'){
+    console.log(`${req.method} ${req.path.replace(/\/eyJ[\w\=]+/g, '/*******************')}`);
     return next();
   }
 
   try {
-
+    console.log(`${req.params.id} : Downloading...`);
     const url = await jackettio.getDownload(
       Object.assign(JSON.parse(atob(req.params.userConfig)), {ip: req.clientIp}),
       req.params.type, 

@@ -48,7 +48,7 @@ export default {
   slowIndexerRequest: parseInt(process.env.SLOW_INDEXER_REQUEST || 5),
 
   defaultUserConfig: {
-    qualities: commaListToArray(process.env.DEFAULT_QUALITIES || '0, 720, 1080').map(v => parseInt(v)),
+    qualities: commaListToArray(process.env.DEFAULT_QUALITIES || '0, 720, 1080, 2160').map(v => parseInt(v)),
     excludeKeywords: commaListToArray(process.env.DEFAULT_EXCLUDE_KEYWORDS || ''),
     maxTorrents: parseInt(process.env.DEFAULT_MAX_TORRENTS || 8),
     priotizeLanguages: commaListToArray(process.env.DEFAULT_PRIOTIZE_LANGUAGES || ''),
